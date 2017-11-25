@@ -234,9 +234,6 @@ final class PhotoLibraryService {
                     return
                 }
 
-                var imageDataWrapper: PictureData?
-
-                let data = imageData!
                 var mimeType: String?
 
                 if (PhotoLibraryService.imageHasAlpha(image)){
@@ -244,6 +241,18 @@ final class PhotoLibraryService {
                 } else {
                     mimeType = "image/jpeg"
                 }
+
+                var data = imageData!
+
+                if dataUTI?.range(of: ".heic") != nil || dataUTI?.range(of: ".heif") != nil {
+                    if mimeType == "image/png" {
+                        data = UIImagePNGRepresentation(image)!
+                    } else {
+                        data = UIImageJPEGRepresentation(image, 1.0)!
+                    }
+                }
+
+                var imageDataWrapper: PictureData?
 
                 if mimeType != nil {
                     imageDataWrapper = PictureData(data: data, mimeType: mimeType!)
